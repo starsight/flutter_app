@@ -196,222 +196,498 @@ class MyApp extends StatelessWidget {
       title: 'Welcome',
       theme: new ThemeData(primaryColor: Colors.black),
       //home: new RandomWords()
-      home: new MyHomePage(title: 'Flutter Demo'),
+      home: new ScaffoldRoute(),
     );
   }
 }
+class ScaffoldRoute extends StatefulWidget {
+  @override
+  _ScaffoldRouteState createState() => _ScaffoldRouteState();
+}
 
-class NewRoute extends StatelessWidget {
-  NewRoute(this.tip);
+class _ScaffoldRouteState extends State<ScaffoldRoute> with SingleTickerProviderStateMixin {
+  int _selectedIndex = 1;
 
-  final String tip;
+  TabController _tabController; //需要定义一个Controller
+  List tabs = ["新闻", "历史", "图片"];
+
+  @override
+  void initState() {
+    super.initState();
+    // 创建Controller
+    _tabController = TabController(length: tabs.length, vsync: this);
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("New route"),
+      appBar: AppBar( //导航栏
+        title: Text("App Name"),
+        actions: <Widget>[ //导航栏右侧菜单
+          IconButton(icon: Icon(Icons.share), onPressed: () {}),
+        ],
+        bottom: TabBar(   //生成Tab菜单
+            controller: _tabController,
+            tabs: tabs.map((e) => Tab(text: e)).toList()
+        ),
+        leading: Builder(builder: (context) {
+          return IconButton(
+            icon: Icon(Icons.dashboard, color: Colors.white), //自定义图标
+            onPressed: () {
+              // 打开抽屉菜单
+
+             // AnimationController controller = new AnimationController(
+              //    duration: const Duration(seconds: 3), vsync: this);
+              //图片宽高从0变到300
+             // Animation<double> animation2 = new Tween(begin: 0.0, end: 300.0).animate(controller);
+
+//              Navigator.push(context, PageRouteBuilder(
+//                  transitionDuration: Duration(milliseconds: 500), //动画时间为500毫秒
+//                  pageBuilder: (BuildContext context, Animation animation,
+//                      Animation secondaryAnimation) {
+//                    return new FadeTransition( //使用渐隐渐入过渡,
+//                        opacity: animation2,
+//                        child: PageB() //路由B
+//                    );
+//                  }));
+              Navigator.push(context, animation_route(HeroAnimationRoute()));
+              //Scaffold.of(context).openDrawer();
+            },
+          );
+        }),
       ),
-      body: Center(
-        child: Column(
-          mainAxisSize: MainAxisSize.max,
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: <Widget>[
-            Container(
-              //margin: EdgeInsets.only(top: 50.0, left: 130.0),
-              //容器外补白
-              constraints: BoxConstraints.tightFor(width: 200.0, height: 150.0),
-              //卡片大小
-              decoration: BoxDecoration(
-                  //背景装饰
-                  gradient: RadialGradient(
-                      //背景径向渐变
-                      colors: [Colors.red, Colors.orange],
-                      center: Alignment.topLeft,
-                      radius: .98),
-                  borderRadius: BorderRadius.circular(20.0), //3像素圆角
-                  boxShadow: [
-                    //卡片阴影
-                    BoxShadow(
-                        color: Colors.black54,
-                        offset: Offset(2.0, 2.0),
-                        blurRadius: 4.0)
-                  ]),
-              //transform: Matrix4.rotationZ(.2),
-              //卡片倾斜变换
-              alignment: Alignment.center,
-              //卡片内文字居中
-              child: Text(
-                //卡片文字
-                "$tip", style: TextStyle(color: Colors.white, fontSize: 40.0),
-              ),
-            ),
+      body: TabBarView(
+        controller: _tabController,
+//children: <Widget>[ScrollNotificationTestRoute()],
+        children: tabs.map((e) { //创建3个Tab页
+          return Container(
+            alignment: Alignment.center,
+            child: Text(e, textScaleFactor: 5),
+          );
+        }).toList(),
+      ),
+      drawer: new MyDrawer(), //抽屉
+      endDrawer: new MyDrawer(), //抽屉
+      bottomNavigationBar: BottomNavigationBar( // 底部导航
+        items: <BottomNavigationBarItem>[
+          BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
+          BottomNavigationBarItem(icon: Icon(Icons.business), title: Text('Business')),
+          BottomNavigationBarItem(icon: Icon(Icons.school), title: Text('School')),
+        ],
+        currentIndex: _selectedIndex,
+        fixedColor: Colors.blue,
+        onTap: _onItemTapped,
+      ),
+      floatingActionButton: FloatingActionButton( //悬浮按钮
+          child: Icon(Icons.add),
+          onPressed:_onAdd
+      ),
 
-            Container(
-              margin: EdgeInsets.fromLTRB(10.0,10,10,10), //容器外补白
-              color: Colors.orange,
-              child: Text("Hello world!"),
-            ),
-            Container(
-              padding: EdgeInsets.all(1.0), //容器内补白
-              color: Colors.orange,
-              child: Text("Hello world!"),
-            ),
-
-          ],
+    );
+  }
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+  void _onAdd(){
+  }
+}
+class SingleChildScrollViewTestRoute extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    String str = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+    return Scrollbar(
+      child: SingleChildScrollView(
+        reverse: true,
+        padding: EdgeInsets.all(16.0),
+        child: Center(
+          child: Column(
+            //动态创建一个List<Widget>
+            children: str.split("")
+            //每一个字母都用一个Text显示,字体为原来的两倍
+                .map((c) => Text(c, textScaleFactor: 2.0,))
+                .toList(),
+          ),
         ),
       ),
     );
   }
 }
 
-class MyHomePage extends StatefulWidget {
-  MyHomePage({Key key1, this.title}) : super(key: key1);
 
-  final String title;
-
+class InfiniteListView extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => new _HomePageState();
+  _InfiniteListViewState createState() => new _InfiniteListViewState();
 }
 
-class _HomePageState extends State<MyHomePage> {
-  int _counter = 0;
+class _InfiniteListViewState extends State<InfiniteListView> {
+  static const loadingTag = "##loading##"; //表尾标记
+  var _words = <String>[loadingTag];
 
-  void _incrCounter() {
-    setState(() {
-      _counter++;
+  @override
+  void initState() {
+    _retrieveData();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return ListView.separated(
+      itemCount: _words.length,
+      itemBuilder: (context, index) {
+        //如果到了表尾
+        if (_words[index] == loadingTag) {
+          //不足100条，继续获取数据
+          if (_words.length - 1 < 100) {
+            //获取数据
+            _retrieveData();
+            //加载时显示loading
+            return Container(
+              padding: const EdgeInsets.all(16.0),
+              alignment: Alignment.center,
+              child: SizedBox(
+                  width: 24.0,
+                  height: 24.0,
+                  child: CircularProgressIndicator(strokeWidth: 2.0)
+              ),
+            );
+          } else {
+            //已经加载了100条数据，不再获取数据。
+            return Container(
+                alignment: Alignment.center,
+                padding: EdgeInsets.all(16.0),
+                child: Text("没有更多了", style: TextStyle(color: Colors.grey),)
+            );
+          }
+        }
+        //显示单词列表项
+        return ListTile(title: Text(_words[index]));
+      },
+      separatorBuilder: (context, index) => Divider(height: .0),
+    );
+  }
+
+  void _retrieveData() {
+    Future.delayed(Duration(seconds: 2)).then((e) {
+      _words.insertAll(_words.length - 1,
+          //每次生成20个单词
+          generateWordPairs().take(20).map((e) => e.asPascalCase).toList()
+      );
+      setState(() {
+        //重新构建列表
+      });
     });
   }
 
+}
+
+
+
+class MyDrawer extends StatelessWidget {
+  const MyDrawer({
+    Key key,
+  }) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text(widget.title),
-      ),
-      body: new Center(
-        child: new Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+    return Drawer(
+      child: MediaQuery.removePadding(
+        context: context,
+        // DrawerHeader consumes top MediaQuery padding.
+        removeTop: true,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
-            new Text('increment time'),
-            new Text('$_counter'),
-            new FlatButton(
-              child: Text("open new route"),
-              textColor: Colors.blue,
-              onPressed: () {
-                //导航到新路由
-                Navigator.push(context,
-                    new MaterialPageRoute(builder: (context) {
-                  return new NewRoute("TIPS");
-                }));
-              },
+            Padding(
+              padding: const EdgeInsets.only(top: 38.0),
+              child: Row(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0),
+                    child: ClipOval(
+                      child: Image.asset(
+                        "imgs/avatar.png",
+                        width: 80,
+                      ),
+                    ),
+                  ),
+                  Text(
+                    "Wendux",
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+              child: ListView(
+                children: <Widget>[
+                  ListTile(
+                    leading: const Icon(Icons.add),
+                    title: const Text('Add account'),
+                  ),
+                  ListTile(
+                    leading: const Icon(Icons.settings),
+                    title: const Text('Manage accounts'),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
       ),
-      floatingActionButton: new FloatingActionButton(
-        onPressed: _incrCounter,
-        tooltip: 'increment',
-        child: new Icon(Icons.add),
-      ),
     );
   }
 }
 
-class RandomWord extends StatelessWidget {
+
+
+class CustomScrollViewTestRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final wordPair = new WordPair.random();
-    return new Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: new Text(wordPair.toString()),
-    );
-  }
-}
+    //因为本路由没有使用Scaffold，为了让子级Widget(如Text)使用
+    //Material Design 默认的样式风格,我们使用Material作为本路由的根。
+    return Material(
+      child: CustomScrollView(
+        slivers: <Widget>[
+          //AppBar，包含一个导航栏
+          SliverAppBar(
+            pinned: true,
+            expandedHeight: 250.0,
+            flexibleSpace: FlexibleSpaceBar(
+              title: const Text('Demo'),
+              background: Image.asset(
+                "./images/avatar.png", fit: BoxFit.cover,),
+            ),
+          ),
 
-class RandomWords extends StatefulWidget {
-  @override
-  State<StatefulWidget> createState() => new RandomWordsState();
-}
-
-class RandomWordsState extends State<RandomWords> {
-  final _suggestions = <WordPair>[];
-  final _biggerFont = const TextStyle(fontSize: 18.0);
-  final _saved = new Set<WordPair>();
-
-  @override
-  Widget build(BuildContext context) {
-    //final wordPair = new WordPair.random();
-    //return new Text(wordPair.asPascalCase);
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("StartUp !"),
-        actions: <Widget>[
-          new IconButton(icon: new Icon(Icons.list), onPressed: _pushSaved)
+          SliverPadding(
+            padding: const EdgeInsets.all(1.0),
+            sliver: new SliverGrid( //Grid
+              gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
+                crossAxisCount: 2, //Grid按两列显示
+                mainAxisSpacing: 10.0,
+                crossAxisSpacing: 10.0,
+                childAspectRatio: 4.0,
+              ),
+              delegate: new SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  //创建子widget
+                  return new Container(
+                    alignment: Alignment.center,
+                    color: Colors.cyan[100 * (index % 9)],
+                    child: new Text('grid item $index'),
+                  );
+                },
+                childCount: 20,
+              ),
+            ),
+          ),
+          //List
+          new SliverFixedExtentList(
+            itemExtent: 50.0,
+            delegate: new SliverChildBuilderDelegate(
+                    (BuildContext context, int index) {
+                  //创建列表项
+                  return new Container(
+                    alignment: Alignment.center,
+                    color: Colors.lightBlue[100 * (index % 9)],
+                    child: new Text('list item $index'),
+                  );
+                },
+                childCount: 50 //50个列表项
+            ),
+          ),
         ],
       ),
-      body: _buildSuggestions(),
     );
   }
+}
 
-  void _pushSaved() {
-    Navigator.of(context).push(new MaterialPageRoute(builder: (context) {
-      final tiles = _saved.map(
-        (pair) {
-          return new ListTile(
-            title: new Text(
-              pair.asPascalCase,
-              style: _biggerFont,
-            ),
-          );
-        },
-      );
-      final divided = ListTile.divideTiles(
-        context: context,
-        tiles: tiles,
-      ).toList();
 
-      return new Scaffold(
-        appBar: new AppBar(
-          title: new Text("Saved Suggestions"),
+class ScrollNotificationTestRoute extends StatefulWidget {
+  @override
+  _ScrollNotificationTestRouteState createState() =>
+      new _ScrollNotificationTestRouteState();
+}
+
+class _ScrollNotificationTestRouteState
+    extends State<ScrollNotificationTestRoute> {
+  String _progress = "0%"; //保存进度百分比
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Listener(
+          child: ConstrainedBox(
+            constraints: BoxConstraints.tight(Size(300.0, 200.0)),
+            child: DecoratedBox(
+                decoration: BoxDecoration(color: Colors.blue)),
+          ),
+          onPointerDown: (event) => print("down0"),
         ),
-        body: new ListView(children: divided),
-      );
-    }));
-  }
-
-  Widget _buildSuggestions() {
-    return new ListView.builder(
-      padding: const EdgeInsets.all(16.0),
-      itemBuilder: (context, i) {
-        if (i.isOdd) return new Divider();
-        final index = i ~/ 2;
-
-        if (index >= _suggestions.length) {
-          _suggestions.addAll(generateWordPairs().take(10));
-        }
-        return _buildRow(_suggestions[index]);
-      },
+        Listener(
+          child: ConstrainedBox(
+            constraints: BoxConstraints.tight(Size(200.0, 100.0)),
+            child: Center(
+              child: Text("左上角200*100范围内非文本区域点击"),
+            ),
+          ),
+          onPointerDown: (event) => print("down1"),
+          behavior: HitTestBehavior.translucent, //放开此行注释后可以"点透"
+        )
+      ],
     );
   }
+}
 
-  Widget _buildRow(WordPair suggestion) {
-    final alreadySaved = _saved.contains(suggestion);
-    return new ListTile(
-      title: new Text(
-        suggestion.asPascalCase,
-        style: _biggerFont,
+
+class ScaleAnimationRoute extends StatefulWidget {
+  @override
+  _ScaleAnimationRouteState createState() => new _ScaleAnimationRouteState();
+}
+
+//需要继承TickerProvider，如果有多个AnimationController，则应该使用TickerProviderStateMixin。
+class _ScaleAnimationRouteState extends State<ScaleAnimationRoute>  with SingleTickerProviderStateMixin{
+
+  Animation<double> animation;
+  AnimationController controller;
+
+  initState() {
+    super.initState();
+    controller = new AnimationController(
+        duration: const Duration(seconds: 3), vsync: this);
+    //图片宽高从0变到300
+    animation = new Tween(begin: 0.0, end: 300.0).animate(controller)..addListener(() {
+        setState(()=>{});
+      });
+    //启动动画(正向执行)
+    controller.forward();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return new Center(
+      child: Image.asset("images/avatar.png",
+          width: animation.value,
+          height: animation.value
       ),
-      trailing: new Icon(alreadySaved ? Icons.favorite : Icons.favorite_border,
-          color: alreadySaved ? Colors.red : null),
-      onTap: () {
-        setState(() {
-          if (alreadySaved)
-            _saved.remove(suggestion);
-          else
-            _saved.add(suggestion);
-        });
-      },
     );
   }
+
+  dispose() {
+    //路由销毁时需要释放动画资源
+    controller.dispose();
+    super.dispose();
+  }
+}
+
+//Hero跳转动画
+class HeroAnimationRoute extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      alignment: Alignment.center,
+      child: Scaffold(
+        appBar: AppBar( //导航栏
+          title: Text("App Name")),
+        body : InkWell(
+          child: Hero(
+            tag: "avatar", //唯一标记，前后两个路由页Hero的tag必须相同
+            child: ClipOval(
+              child: Image.asset("images/1.jpg",
+                width: 50.0,
+              ),
+            ),
+          ),
+          onTap: () {
+            //打开B路由
+            Navigator.push(context, PageRouteBuilder(
+                pageBuilder: (BuildContext context, Animation animation,
+                    Animation secondaryAnimation) {
+                  return new FadeTransition(
+                    opacity: animation,
+                    child: Scaffold(
+                      //title: Text("原图"),
+                      body: HeroAnimationRouteB(),
+                    ),
+                  );
+                })
+            );
+          },
+        ),
+      )
+
+    );
+  }
+}
+class HeroAnimationRouteB extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Hero(
+        tag: "avatar", //唯一标记，前后两个路由页Hero的tag必须相同
+        child: Image.asset("images/1.jpg"),
+      ),
+    );
+  }
+}
+
+//https://www.cnblogs.com/ckAng/p/10768894.html
+//自定义RouteBuilder
+class animation_route extends PageRouteBuilder {
+
+  final Widget widget;
+
+  animation_route(this.widget)
+      : super(
+      transitionDuration: const Duration(milliseconds: 500), //设置动画时长500毫秒
+      pageBuilder: (
+          BuildContext context,
+          Animation<double> animation1,
+          Animation<double> animation2){
+        return widget;
+      },
+      transitionsBuilder: (
+          BuildContext context,
+          Animation<double> animation1,
+          Animation<double> animation2,
+          Widget child
+          ){
+        //渐变过渡
+//      return FadeTransition(//渐变过渡 0.0-1.0
+//        opacity: Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
+//          parent: animation1, //动画样式
+//          curve: Curves.fastOutSlowIn, //动画曲线
+//        )),
+//        child: child,
+//      );
+        //翻转缩放
+//      return RotationTransition(
+//        turns: Tween(begin: 0.0, end: 1.0).
+//        animate(
+//          CurvedAnimation(
+//            parent: animation1,
+//            curve: Curves.fastOutSlowIn,
+//          )
+//        ),
+//        child: ScaleTransition(
+//          scale: Tween(begin: 0.0, end: 1.0).
+//          animate(CurvedAnimation(parent: animation1, curve: Curves.fastOutSlowIn)),
+//          child: child,
+//        ),
+//      );
+        //左右滑动
+        return SlideTransition(
+          position: Tween<Offset>(
+              begin: Offset(-1.0, 0.0),
+              end: Offset(0.0, 0.0)
+          ).animate(CurvedAnimation(parent: animation1, curve: Curves.fastOutSlowIn)),
+          child: child,
+        );
+      }
+
+  );
+
+
 }
