@@ -200,12 +200,14 @@ class MyApp extends StatelessWidget {
     );
   }
 }
+
 class ScaffoldRoute extends StatefulWidget {
   @override
   _ScaffoldRouteState createState() => _ScaffoldRouteState();
 }
 
-class _ScaffoldRouteState extends State<ScaffoldRoute> with SingleTickerProviderStateMixin {
+class _ScaffoldRouteState extends State<ScaffoldRoute>
+    with SingleTickerProviderStateMixin {
   int _selectedIndex = 1;
 
   TabController _tabController; //需要定义一个Controller
@@ -221,25 +223,27 @@ class _ScaffoldRouteState extends State<ScaffoldRoute> with SingleTickerProvider
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar( //导航栏
+      appBar: AppBar(
+        //导航栏
         title: Text("App Name"),
-        actions: <Widget>[ //导航栏右侧菜单
+        actions: <Widget>[
+          //导航栏右侧菜单
           IconButton(icon: Icon(Icons.share), onPressed: () {}),
         ],
-        bottom: TabBar(   //生成Tab菜单
+        bottom: TabBar(
+            //生成Tab菜单
             controller: _tabController,
-            tabs: tabs.map((e) => Tab(text: e)).toList()
-        ),
+            tabs: tabs.map((e) => Tab(text: e)).toList()),
         leading: Builder(builder: (context) {
           return IconButton(
             icon: Icon(Icons.dashboard, color: Colors.white), //自定义图标
             onPressed: () {
               // 打开抽屉菜单
 
-             // AnimationController controller = new AnimationController(
+              // AnimationController controller = new AnimationController(
               //    duration: const Duration(seconds: 3), vsync: this);
               //图片宽高从0变到300
-             // Animation<double> animation2 = new Tween(begin: 0.0, end: 300.0).animate(controller);
+              // Animation<double> animation2 = new Tween(begin: 0.0, end: 300.0).animate(controller);
 
 //              Navigator.push(context, PageRouteBuilder(
 //                  transitionDuration: Duration(milliseconds: 500), //动画时间为500毫秒
@@ -259,40 +263,47 @@ class _ScaffoldRouteState extends State<ScaffoldRoute> with SingleTickerProvider
       body: TabBarView(
         controller: _tabController,
 //children: <Widget>[ScrollNotificationTestRoute()],
-        children: tabs.map((e) { //创建3个Tab页
+        children: tabs.map((e) {
+          //创建3个Tab页
           return Container(
             alignment: Alignment.center,
             child: Text(e, textScaleFactor: 5),
           );
         }).toList(),
       ),
-      drawer: new MyDrawer(), //抽屉
-      endDrawer: new MyDrawer(), //抽屉
-      bottomNavigationBar: BottomNavigationBar( // 底部导航
+      drawer: new MyDrawer(),
+      //抽屉
+      endDrawer: new MyDrawer(),
+      //抽屉
+      bottomNavigationBar: BottomNavigationBar(
+        // 底部导航
         items: <BottomNavigationBarItem>[
           BottomNavigationBarItem(icon: Icon(Icons.home), title: Text('Home')),
-          BottomNavigationBarItem(icon: Icon(Icons.business), title: Text('Business')),
-          BottomNavigationBarItem(icon: Icon(Icons.school), title: Text('School')),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.business), title: Text('Business')),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.school), title: Text('School')),
         ],
         currentIndex: _selectedIndex,
         fixedColor: Colors.blue,
         onTap: _onItemTapped,
       ),
-      floatingActionButton: FloatingActionButton( //悬浮按钮
+      floatingActionButton: FloatingActionButton(
+          //悬浮按钮
           child: Icon(Icons.add),
-          onPressed:_onAdd
-      ),
-
+          onPressed: _onAdd),
     );
   }
+
   void _onItemTapped(int index) {
     setState(() {
       _selectedIndex = index;
     });
   }
-  void _onAdd(){
-  }
+
+  void _onAdd() {}
 }
+
 class SingleChildScrollViewTestRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -304,9 +315,13 @@ class SingleChildScrollViewTestRoute extends StatelessWidget {
         child: Center(
           child: Column(
             //动态创建一个List<Widget>
-            children: str.split("")
-            //每一个字母都用一个Text显示,字体为原来的两倍
-                .map((c) => Text(c, textScaleFactor: 2.0,))
+            children: str
+                .split("")
+                //每一个字母都用一个Text显示,字体为原来的两倍
+                .map((c) => Text(
+                      c,
+                      textScaleFactor: 2.0,
+                    ))
                 .toList(),
           ),
         ),
@@ -314,7 +329,6 @@ class SingleChildScrollViewTestRoute extends StatelessWidget {
     );
   }
 }
-
 
 class InfiniteListView extends StatefulWidget {
   @override
@@ -348,16 +362,17 @@ class _InfiniteListViewState extends State<InfiniteListView> {
               child: SizedBox(
                   width: 24.0,
                   height: 24.0,
-                  child: CircularProgressIndicator(strokeWidth: 2.0)
-              ),
+                  child: CircularProgressIndicator(strokeWidth: 2.0)),
             );
           } else {
             //已经加载了100条数据，不再获取数据。
             return Container(
                 alignment: Alignment.center,
                 padding: EdgeInsets.all(16.0),
-                child: Text("没有更多了", style: TextStyle(color: Colors.grey),)
-            );
+                child: Text(
+                  "没有更多了",
+                  style: TextStyle(color: Colors.grey),
+                ));
           }
         }
         //显示单词列表项
@@ -369,19 +384,16 @@ class _InfiniteListViewState extends State<InfiniteListView> {
 
   void _retrieveData() {
     Future.delayed(Duration(seconds: 2)).then((e) {
-      _words.insertAll(_words.length - 1,
+      _words.insertAll(
+          _words.length - 1,
           //每次生成20个单词
-          generateWordPairs().take(20).map((e) => e.asPascalCase).toList()
-      );
+          generateWordPairs().take(20).map((e) => e.asPascalCase).toList());
       setState(() {
         //重新构建列表
       });
     });
   }
-
 }
-
-
 
 class MyDrawer extends StatelessWidget {
   const MyDrawer({
@@ -439,8 +451,6 @@ class MyDrawer extends StatelessWidget {
   }
 }
 
-
-
 class CustomScrollViewTestRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -456,13 +466,16 @@ class CustomScrollViewTestRoute extends StatelessWidget {
             flexibleSpace: FlexibleSpaceBar(
               title: const Text('Demo'),
               background: Image.asset(
-                "./images/avatar.png", fit: BoxFit.cover,),
+                "./images/avatar.png",
+                fit: BoxFit.cover,
+              ),
             ),
           ),
 
           SliverPadding(
             padding: const EdgeInsets.all(1.0),
-            sliver: new SliverGrid( //Grid
+            sliver: new SliverGrid(
+              //Grid
               gridDelegate: new SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisCount: 2, //Grid按两列显示
                 mainAxisSpacing: 10.0,
@@ -470,7 +483,7 @@ class CustomScrollViewTestRoute extends StatelessWidget {
                 childAspectRatio: 4.0,
               ),
               delegate: new SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
+                (BuildContext context, int index) {
                   //创建子widget
                   return new Container(
                     alignment: Alignment.center,
@@ -486,23 +499,21 @@ class CustomScrollViewTestRoute extends StatelessWidget {
           new SliverFixedExtentList(
             itemExtent: 50.0,
             delegate: new SliverChildBuilderDelegate(
-                    (BuildContext context, int index) {
-                  //创建列表项
-                  return new Container(
-                    alignment: Alignment.center,
-                    color: Colors.lightBlue[100 * (index % 9)],
-                    child: new Text('list item $index'),
-                  );
-                },
-                childCount: 50 //50个列表项
-            ),
+                (BuildContext context, int index) {
+              //创建列表项
+              return new Container(
+                alignment: Alignment.center,
+                color: Colors.lightBlue[100 * (index % 9)],
+                child: new Text('list item $index'),
+              );
+            }, childCount: 50 //50个列表项
+                ),
           ),
         ],
       ),
     );
   }
 }
-
 
 class ScrollNotificationTestRoute extends StatefulWidget {
   @override
@@ -521,8 +532,7 @@ class _ScrollNotificationTestRouteState
         Listener(
           child: ConstrainedBox(
             constraints: BoxConstraints.tight(Size(300.0, 200.0)),
-            child: DecoratedBox(
-                decoration: BoxDecoration(color: Colors.blue)),
+            child: DecoratedBox(decoration: BoxDecoration(color: Colors.blue)),
           ),
           onPointerDown: (event) => print("down0"),
         ),
@@ -541,15 +551,14 @@ class _ScrollNotificationTestRouteState
   }
 }
 
-
 class ScaleAnimationRoute extends StatefulWidget {
   @override
   _ScaleAnimationRouteState createState() => new _ScaleAnimationRouteState();
 }
 
 //需要继承TickerProvider，如果有多个AnimationController，则应该使用TickerProviderStateMixin。
-class _ScaleAnimationRouteState extends State<ScaleAnimationRoute>  with SingleTickerProviderStateMixin{
-
+class _ScaleAnimationRouteState extends State<ScaleAnimationRoute>
+    with SingleTickerProviderStateMixin {
   Animation<double> animation;
   AnimationController controller;
 
@@ -558,8 +567,9 @@ class _ScaleAnimationRouteState extends State<ScaleAnimationRoute>  with SingleT
     controller = new AnimationController(
         duration: const Duration(seconds: 3), vsync: this);
     //图片宽高从0变到300
-    animation = new Tween(begin: 0.0, end: 300.0).animate(controller)..addListener(() {
-        setState(()=>{});
+    animation = new Tween(begin: 0.0, end: 300.0).animate(controller)
+      ..addListener(() {
+        setState(() => {});
       });
     //启动动画(正向执行)
     controller.forward();
@@ -569,9 +579,7 @@ class _ScaleAnimationRouteState extends State<ScaleAnimationRoute>  with SingleT
   Widget build(BuildContext context) {
     return new Center(
       child: Image.asset("images/avatar.png",
-          width: animation.value,
-          height: animation.value
-      ),
+          width: animation.value, height: animation.value),
     );
   }
 
@@ -587,40 +595,40 @@ class HeroAnimationRoute extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      alignment: Alignment.center,
-      child: Scaffold(
-        appBar: AppBar( //导航栏
-          title: Text("App Name")),
-        body : InkWell(
-          child: Hero(
-            tag: "avatar", //唯一标记，前后两个路由页Hero的tag必须相同
-            child: ClipOval(
-              child: Image.asset("images/1.jpg",
-                width: 50.0,
+        alignment: Alignment.center,
+        child: Scaffold(
+          appBar: AppBar(
+              //导航栏
+              title: Text("App Name")),
+          body: InkWell(
+            child: Hero(
+              tag: "avatar", //唯一标记，前后两个路由页Hero的tag必须相同
+              child: ClipOval(
+                child: Image.asset(
+                  "images/1.jpg",
+                  width: 50.0,
+                ),
               ),
             ),
+            onTap: () {
+              //打开B路由
+              Navigator.push(context, PageRouteBuilder(pageBuilder:
+                  (BuildContext context, Animation animation,
+                      Animation secondaryAnimation) {
+                return new FadeTransition(
+                  opacity: animation,
+                  child: Scaffold(
+                    //title: Text("原图"),
+                    body: HeroAnimationRouteB(),
+                  ),
+                );
+              }));
+            },
           ),
-          onTap: () {
-            //打开B路由
-            Navigator.push(context, PageRouteBuilder(
-                pageBuilder: (BuildContext context, Animation animation,
-                    Animation secondaryAnimation) {
-                  return new FadeTransition(
-                    opacity: animation,
-                    child: Scaffold(
-                      //title: Text("原图"),
-                      body: HeroAnimationRouteB(),
-                    ),
-                  );
-                })
-            );
-          },
-        ),
-      )
-
-    );
+        ));
   }
 }
+
 class HeroAnimationRouteB extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
@@ -636,25 +644,20 @@ class HeroAnimationRouteB extends StatelessWidget {
 //https://www.cnblogs.com/ckAng/p/10768894.html
 //自定义RouteBuilder
 class animation_route extends PageRouteBuilder {
-
   final Widget widget;
 
   animation_route(this.widget)
       : super(
-      transitionDuration: const Duration(milliseconds: 500), //设置动画时长500毫秒
-      pageBuilder: (
-          BuildContext context,
-          Animation<double> animation1,
-          Animation<double> animation2){
-        return widget;
-      },
-      transitionsBuilder: (
-          BuildContext context,
-          Animation<double> animation1,
-          Animation<double> animation2,
-          Widget child
-          ){
-        //渐变过渡
+            transitionDuration: const Duration(milliseconds: 500), //设置动画时长500毫秒
+            pageBuilder: (BuildContext context, Animation<double> animation1,
+                Animation<double> animation2) {
+              return widget;
+            },
+            transitionsBuilder: (BuildContext context,
+                Animation<double> animation1,
+                Animation<double> animation2,
+                Widget child) {
+              //渐变过渡
 //      return FadeTransition(//渐变过渡 0.0-1.0
 //        opacity: Tween(begin: 0.0, end: 1.0).animate(CurvedAnimation(
 //          parent: animation1, //动画样式
@@ -662,7 +665,7 @@ class animation_route extends PageRouteBuilder {
 //        )),
 //        child: child,
 //      );
-        //翻转缩放
+              //翻转缩放
 //      return RotationTransition(
 //        turns: Tween(begin: 0.0, end: 1.0).
 //        animate(
@@ -677,17 +680,13 @@ class animation_route extends PageRouteBuilder {
 //          child: child,
 //        ),
 //      );
-        //左右滑动
-        return SlideTransition(
-          position: Tween<Offset>(
-              begin: Offset(-1.0, 0.0),
-              end: Offset(0.0, 0.0)
-          ).animate(CurvedAnimation(parent: animation1, curve: Curves.fastOutSlowIn)),
-          child: child,
-        );
-      }
-
-  );
-
-
+              //左右滑动
+              return SlideTransition(
+                position: Tween<Offset>(
+                        begin: Offset(-1.0, 0.0), end: Offset(0.0, 0.0))
+                    .animate(CurvedAnimation(
+                        parent: animation1, curve: Curves.fastOutSlowIn)),
+                child: child,
+              );
+            });
 }
